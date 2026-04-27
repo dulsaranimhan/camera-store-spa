@@ -1,29 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
-import api from "../services/api"
-import type { Product } from "../types/product"
-import ProductCard from "../components/ProductCard.vue"
-
-const products = ref<Product[]>([])
-
-onMounted(async () => {
-  const response = await api.get("/products/category/smartphones")
-  products.value = response.data.products
-})
+import Navbar from "../components/Navbar.vue"
+import CategoryMenu from "../components/CategoryMenu.vue"
+import HeroBanner from "../components/HeroBanner.vue"
+import CategoryGrid from "../components/CategoryGrid.vue"
+import BrandsSection from "../components/BrandsSection.vue"
+import FooterSection from "../components/FooterSection.vue"
 </script>
 
 <template>
-  <div class="p-8 bg-gray-100 min-h-screen">
-    <h1 class="text-3xl font-bold mb-6 text-center">
-      Camera Store 🔥
-    </h1>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <ProductCard
-  v-for="product in products"
-  :key="product.id"
-  :product="product"
-/>
-    </div>
-  </div>
+  <Navbar />
+  <CategoryMenu />
+  <HeroBanner />
+  <CategoryGrid />
+  <BrandsSection />
+  <FooterSection />
 </template>
