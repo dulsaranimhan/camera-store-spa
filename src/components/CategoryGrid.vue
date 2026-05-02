@@ -1,87 +1,49 @@
 <script setup lang="ts">
 import { computed } from "vue"
-import ProductCard from "./ProductCard.vue"
+import { products } from "../data/products"
 import { useSearchStore } from "../stores/searchStore"
 
 const searchStore = useSearchStore()
 
-const products = [
-  {
-    id: 1,
-    title: "Sony A7 IV",
-    description: "Full-frame mirrorless camera",
-    price: 430000,
-    discountPercentage: 0,
-    rating: 4.8,
-    stock: 5,
-    brand: "Sony",
-    category: "Photography",
-    thumbnail: "/src/assets/sony-camera.png",
-    images: ["/src/assets/sony-camera.png"],
-  },
-  {
-    id: 2,
-    title: "Nikon D7500",
-    description: "DSLR camera for photography",
-    price: 280000,
-    discountPercentage: 0,
-    rating: 4.6,
-    stock: 4,
-    brand: "Nikon",
-    category: "Photography",
-    thumbnail: "/src/assets/sony-camera.png",
-    images: ["/src/assets/sony-camera.png"],
-  },
-  {
-    id: 3,
-    title: "Canon R5",
-    description: "Professional mirrorless camera",
-    price: 310000,
-    discountPercentage: 0,
-    rating: 4.7,
-    stock: 3,
-    brand: "Canon",
-    category: "Photography",
-    thumbnail: "/src/assets/sony-camera.png",
-    images: ["/src/assets/sony-camera.png"],
-  },
-  {
-    id: 4,
-    title: "Sony FX3",
-    description: "Cinema camera for video creators",
-    price: 389000,
-    discountPercentage: 0,
-    rating: 4.9,
-    stock: 2,
-    brand: "Sony",
-    category: "Pro Video",
-    thumbnail: "/src/assets/sony-camera.png",
-    images: ["/src/assets/sony-camera.png"],
-  },
-]
-
-const filteredProducts = computed(() =>
-  products.filter((product) =>
-    product.title.toLowerCase().includes(searchStore.keyword.toLowerCase())
-  )
-)
+const hotDeals = computed(() => {
+  return products
+    .filter((product) =>
+      product.name.toLowerCase().includes(searchStore.keyword.toLowerCase())
+    )
+    .slice(0, 4)
+})
 </script>
 
 <template>
   <section class="px-10 py-14 bg-white">
-    <h2 class="text-3xl font-bold mb-8">
-      Featured Camera Deals
+    <h2 id="hot-deals" class="text-3xl font-bold mb-8">
+      Hot Deals
     </h2>
 
     <div
-      v-if="filteredProducts.length > 0"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+      v-if="hotDeals.length > 0"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
     >
-      <ProductCard
-        v-for="product in filteredProducts"
+      <router-link
+        v-for="product in hotDeals"
         :key="product.id"
-        :product="product"
-      />
+        :to="`/product/${product.id}`"
+        class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl transition cursor-pointer"
+      >
+        <img
+          :src="product.image"
+          :alt="product.name"
+          class="w-full h-48 object-contain rounded-md bg-gray-100"
+        />
+
+        <h2 class="text-lg font-semibold mt-3">
+          {{ product.name }}
+        </h2>
+
+        <p class="text-red-600 font-bold">
+          Rs. {{ product.price.toLocaleString() }}
+        </p>
+      </router-link>
     </div>
 
     <p v-else class="text-gray-500">

@@ -42,11 +42,6 @@
       Gaming
     </router-link>
 
-    <router-link
-      to="/"
-      class="hover:text-black transition"
-    >
-      Others
-    </router-link>
+    
   </nav>
 </template>
