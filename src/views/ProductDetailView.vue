@@ -1,80 +1,57 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
-import { useRoute } from "vue-router"
-import api from "../services/api"
+import { useRoute, useRouter } from "vue-router"
+import { products } from "../data/products"
 
 const route = useRoute()
+const router = useRouter()
 
-const product = ref<any>(null)
-const loading = ref(true)
+const productId = route.params.id as string
 
-onMounted(async () => {
-  const id = route.params.id
-  const response = await api.get(`/products/${id}`)
-  product.value = response.data
-  loading.value = false
-})
+const product = products.find(p => p.id === productId)
+
+const goCheckout = () => {
+  router.push(`/checkout/${productId}`)
+}
 </script>
 
 <template>
-  <div class="p-10">
+  <div v-if="product" class="px-10 py-14">
 
-    <!-- Loading -->
-    <div v-if="loading" class="text-center text-lg">
-      Loading product...
-    </div>
+    <div class="grid md:grid-cols-2 gap-10">
 
-    <!-- Product Detail -->
-    <div v-else class="max-w-6xl mx-auto">
+      <img
+        :src="product.image"
+        class="rounded-xl shadow-lg"
+      />
 
-      <!-- Back Button -->
-      <button
-        @click="$router.back()"
-        class="mb-6 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-      >
-        ← Back
-      </button>
+      <div>
 
-      <div class="grid md:grid-cols-2 gap-10">
+        <h1 class="text-3xl font-bold mb-4">
+          {{ product.name }}
+        </h1>
 
-        <!-- Product Image -->
-        <img
-          :src="product.thumbnail"
-          class="rounded-lg shadow-lg w-full"
-        />
+        <p class="text-gray-600 mb-6">
+          {{ product.description }}
+        </p>
 
-        <!-- Product Information -->
-        <div>
+        <p class="text-2xl font-semibold mb-6">
+          Rs. {{ product.price.toLocaleString() }}
+        </p>
 
-          <h1 class="text-4xl font-bold mb-4">
-            {{ product.title }}
-          </h1>
-
-          <p class="text-gray-600 mb-6">
-            {{ product.description }}
-          </p>
-
-          <p class="text-2xl font-semibold mb-4">
-            ${{ product.price }}
-          </p>
-
-          <p class="text-yellow-500 text-lg mb-4">
-            ⭐ {{ product.rating }}
-          </p>
-
-          <p class="text-gray-500">
-            Brand: {{ product.brand }}
-          </p>
-
-          <p class="text-gray-500">
-            Category: {{ product.category }}
-          </p>
-
-        </div>
+        <button
+          @click="goCheckout"
+          class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800"
+        >
+          Buy Now
+        </button>
 
       </div>
 
     </div>
 
+  </div>
+
+  <div v-else class="text-center py-20 text-gray-500">
+    Product not found
   </div>
 </template>
